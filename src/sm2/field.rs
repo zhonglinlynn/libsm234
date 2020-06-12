@@ -268,60 +268,57 @@ pub struct FieldElem {
     pub value: [u32; 8],
 }
 
-#[inline(always)]
+// fn raw_add(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
+//     let mut tmp_res = [0 as u64; 8];
+//     let mut sum = FieldElem::zero();
+//     let mut carry = 0;
+//     for i in 0..8 {
+//         tmp_res[i] = u64::from(a.value[i]) + u64::from(b.value[i]);
+//     }
+//     for i in (0..8).rev() {
+//         let tmp = tmp_res[i] + carry;
+//         carry = tmp >> 32;
+//         sum.value[i] = tmp as u32;
+//     }
+//     (sum, carry as u32)
+// }
+
 fn raw_add(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
-    let mut tmp_res = [0 as u64; 8];
     let mut sum = FieldElem::zero();
-    let mut carry = 0;
-    for i in 0..8 {
-        tmp_res[i] = u64::from(a.value[i]) + u64::from(b.value[i]);
-    }
-    for i in (0..8).rev() {
-        let tmp = tmp_res[i] + carry;
-        carry = tmp >> 32;
-        sum.value[i] = tmp as u32;
-    }
+    let t_sum: u64 = u64::from(a.value[7]) + u64::from(b.value[7]);
+    sum.value[7] = t_sum as u32;
+    let mut carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[6]) + u64::from(b.value[6]) + carry;
+    sum.value[6] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[5]) + u64::from(b.value[5]) + carry;
+    sum.value[5] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[4]) + u64::from(b.value[4]) + carry;
+    sum.value[4] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[3]) + u64::from(b.value[3]) + carry;
+    sum.value[3] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[2]) + u64::from(b.value[2]) + carry;
+    sum.value[2] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[1]) + u64::from(b.value[1]) + carry;
+    sum.value[1] = t_sum as u32;
+    carry = t_sum >> 32;
+
+    let t_sum: u64 = u64::from(a.value[0]) + u64::from(b.value[0]) + carry;
+    sum.value[0] = t_sum as u32;
+    carry = t_sum >> 32;
+
     (sum, carry as u32)
 }
-
-// fn raw_add(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
-//     let mut sum = FieldElem::zero();
-//     let mut carry: u32 = 0;
-
-//     let t_sum: u64 = u64::from(a.value[7]) + u64::from(b.value[7]) + u64::from(carry);
-//     sum.value[7] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[6]) + u64::from(b.value[6]) + u64::from(carry);
-//     sum.value[6] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[5]) + u64::from(b.value[5]) + u64::from(carry);
-//     sum.value[5] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[4]) + u64::from(b.value[4]) + u64::from(carry);
-//     sum.value[4] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[3]) + u64::from(b.value[3]) + u64::from(carry);
-//     sum.value[3] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[2]) + u64::from(b.value[2]) + u64::from(carry);
-//     sum.value[2] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[1]) + u64::from(b.value[1]) + u64::from(carry);
-//     sum.value[1] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     let t_sum: u64 = u64::from(a.value[0]) + u64::from(b.value[0]) + u64::from(carry);
-//     sum.value[0] = (t_sum & 0xffff_ffff) as u32;
-//     carry = (t_sum >> 32) as u32;
-
-//     (sum, carry)
-// }
 
 fn raw_sub(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
     let mut sum = FieldElem::new([0; 8]);
@@ -342,7 +339,6 @@ fn raw_sub(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
     (sum, borrow)
 }
 
-#[inline(always)]
 fn u32_mul(a: u32, b: u32) -> (u64, u64) {
     let uv = u64::from(a) * u64::from(b);
     let u = uv >> 32;
