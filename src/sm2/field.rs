@@ -268,6 +268,7 @@ pub struct FieldElem {
     pub value: [u32; 8],
 }
 
+#[inline(always)]
 fn raw_add(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
     let mut tmp_res = [0 as u64; 8];
     let mut sum = FieldElem::zero();
@@ -280,7 +281,6 @@ fn raw_add(a: &FieldElem, b: &FieldElem) -> (FieldElem, u32) {
         carry = tmp >> 32;
         sum.value[i] = tmp as u32;
     }
-
     (sum, carry as u32)
 }
 
