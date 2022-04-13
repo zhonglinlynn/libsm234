@@ -73,6 +73,8 @@ impl Signature {
         Ok(Signature { r, s })
     }
 
+
+
     pub fn der_encode(&self) -> Vec<u8> {
         yasna::construct_der(|writer| {
             writer.write_sequence(|writer| {
